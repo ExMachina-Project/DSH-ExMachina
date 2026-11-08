@@ -12,7 +12,7 @@
 1. 把仓库根目录的全部内容（`preset.yml`、`agent.cordis.yml`、`skills/`）复制到 `$HOME/.dsh/.agent-presets/exmachina/`；该目录已存在时，先向用户确认是否覆盖。
    - 等价操作：`git clone https://github.com/ExMachina-Project/DSH-ExMachina.git $HOME/.dsh/.agent-presets/exmachina`。
    - 该目录在会话工作区之外：若文件写入被沙箱拒绝，用 sandbox_permissions 重试一次（需用户批准）。
-2. 挂载校验：通过临时插件注入 `agentPresets` 服务并调用 `agentPresets.standingKeyFor('exmachina')`；正常返回即校验通过。
+2. 挂载校验：通过临时插件注入 `agentPresets` 服务并调用 `await agentPresets.resolve('exmachina')`；正常返回预设对象即校验通过（DSH 0.2.x 起服务不再提供 `standingKeyFor`，可用 `list()` 对照预设清单）。
 
 ## 2. 收尾与使用
 

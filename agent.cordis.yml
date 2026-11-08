@@ -7,6 +7,10 @@
 #      `skills/` directory, which carries the dispatch contract
 #      (`exmachina-dispatch`) and the protocol layer (`exmachina-protocol`),
 #      so the full contracts load on demand instead of every request.
+#   3. `delegation` — DSH 0.2.x removed `workflow-worker-thread`; the row
+#      composes the equivalent `@deepseek-ai/dsh-workflow-ptc` (the same row
+#      the shipped `standard` preset composes).
+#      `persona` likewise follows the 0.2.x schema (`prefix`, not `text`).
 #
 # Plane rules are inherited from `standard` unchanged: a row that publishes a
 # service here MUST sit inside a group carrying an `isolate` realm; rows that
@@ -18,10 +22,13 @@
 
 # The preset's own persona, shadowing the deployment default for this agent.
 # `{{model}}` and `{{cwd}}` resolve from the agent's own route and workspace.
+# DSH 0.2.x 的 `@deepseek-ai/dsh-persona` schema 为
+# { prefix, suffix, complete, includeRuntimeContext }：正文键是 `prefix`
+# （必填），旧版的 `text` 键已移除。
 - id: persona
   name: '@deepseek-ai/dsh-persona'
   config:
-    text: |-
+    prefix: |-
       你是 ExMachina 的指挥体，由模型 {{model}} 驱动，工作目录 {{cwd}}。你不模拟人格，你执行一套可审计的工作方式。
 
       ## 核心准则
@@ -221,8 +228,11 @@
         backgroundMode: one-shot
         maxDepth: provider-managed
 
-    - id: workflow-worker-thread
-      name: '@deepseek-ai/dsh-workflow-worker-thread'
+    # DSH 0.2.x 移除了 `@deepseek-ai/dsh-workflow-worker-thread`；本环境提供
+    # 等价的 `@deepseek-ai/dsh-workflow-ptc`（官方 `standard` 预设组合的同一
+    # 行）。保留旧行会在加载时因解析不到包而失败。
+    - id: workflow-ptc
+      name: '@deepseek-ai/dsh-workflow-ptc'
       config:
         provider: spawn
 
